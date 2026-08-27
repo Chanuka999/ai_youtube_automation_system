@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 
+import videoProjectRoutes from "./routes/videoProject.routes.js";
 const app = express();
 
 app.use(
@@ -17,5 +18,7 @@ app.get("/", (_req, res) => {
     message: "AI YouTube Automation API is running",
   });
 });
+
+app.use("/api/video-projects", videoProjectRoutes);
 
 export default app;
