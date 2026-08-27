@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 import videoProjectRoutes from "./routes/videoProject.routes.js";
+import aiRoutes from "./routes/ai.route.js";
 const app = express();
 
 app.use(
@@ -20,5 +21,5 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/video-projects", videoProjectRoutes);
-
+app.use("/api/ai", aiRoutes);
 export default app;
