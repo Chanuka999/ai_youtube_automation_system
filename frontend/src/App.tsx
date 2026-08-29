@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import VideoProjects from "./pages/videos/VideoProjects";
+import YouTube from "./pages/youtube/Youtube";
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -40,14 +41,15 @@ export default function App() {
             element={<Placeholder title="Schedule" />}
           />
 
-          <Route
-            path="/youtube"
-            element={<Placeholder title="YouTube" />}
-          />
+
 
           <Route
             path="/settings"
             element={<Placeholder title="Settings" />}
+          />
+          <Route
+            path="/youtube"
+            element={<YouTube />}
           />
         </Route>
       </Routes>
