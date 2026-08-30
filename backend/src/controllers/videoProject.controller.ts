@@ -78,6 +78,9 @@ export async function createVideoProjectController(
       niche,
       video_type,
       duration,
+      description,
+      hashtags,
+      video_path,
     } = req.body;
 
     if (!user_id) {
@@ -94,14 +97,43 @@ export async function createVideoProjectController(
       });
     }
 
+    let finalTitle = title;
+    let finalDescription = description;
+    let finalHashtags = hashtags;
+    let initialStatus: "draft" | "ready" = "draft";
+
+    // Auto-generate AI content if title is missing
+    if (!finalTitle || !finalDescription) {
+      try {
+        const { generateVideoContent } = await import("../services/ai.service.js");
+        const aiResult = await generateVideoContent(topic, niche || "General", duration ? Number(duration) : 30);
+        
+        finalTitle = finalTitle || aiResult.title;
+        finalDescription = finalDescription || aiResult.description;
+        finalHashtags = finalHashtags || aiResult.hashtags.join(", ");
+        initialStatus = "ready";
+      } catch (aiError) {
+        console.error("AI Generation failed during project creation:", aiError);
+        // Fallback to draft if AI fails
+      }
+    }
+
     const projectId = await createVideoProject({
       user_id,
-      title,
+      title: finalTitle,
       topic,
       niche,
       video_type,
       duration,
+      description: finalDescription,
+      hashtags: finalHashtags,
+      video_path,
     });
+    
+    // Update status if AI generated
+    if (initialStatus === "ready") {
+       await import("../services/videoProject.service.js").then(m => m.updateVideoProject(projectId, { status: "ready" }));
+    }
 
     const project = await getVideoProjectById(projectId);
 

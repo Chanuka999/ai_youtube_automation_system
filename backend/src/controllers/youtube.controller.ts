@@ -144,12 +144,12 @@ export async function youtubeCallback(
         WHERE id = ?
         `,
        [
-          channelId ?? null,
+          channelId || null,
           channelName,
-          channelThumbnail ?? null,
-          accessToken ?? null,
-          refreshToken ?? null,
-          tokenExpiresAt ?? null,
+          channelThumbnail || null,
+          accessToken || null,
+          refreshToken || null,
+          tokenExpiresAt || null,
           existingId,
         ]
       );
@@ -170,12 +170,12 @@ export async function youtubeCallback(
         `,
         [
           userId,
-          channelId,
+          channelId || null,
           channelName,
-          channelThumbnail,
-          accessToken,
-          refreshToken,
-          tokenExpiresAt,
+          channelThumbnail || null,
+          accessToken || null,
+          refreshToken || null,
+          tokenExpiresAt || null,
         ]
       );
     }
