@@ -1,9 +1,11 @@
 import { google } from "googleapis";
 import fs from "fs";
 import path from "path";
+import { Transform } from "stream";
 
 import { db } from "../config/database.js";
 import { createOAuthClient } from "./youtube.service.js";
+import { updateUploadProgress } from "./uploadProgress.service.js";
 
 export interface UploadVideoData {
   userId: number;
@@ -164,10 +166,14 @@ export async function uploadVideoToYouTube(
   const uploadLogId =
     logResult.insertId;
 
+
   try {
     // --------------------------------
     // 7. Create video stream
     // --------------------------------
+  const totalBytes = stats.size;
+
+  let uploadedBytes = 0;
 
     const videoStream =
       fs.createReadStream(videoPath);
@@ -175,6 +181,39 @@ export async function uploadVideoToYouTube(
     // --------------------------------
     // 8. Upload to YouTube
     // --------------------------------
+    const progressStream =
+  new Transform({
+    transform(
+      chunk,
+      encoding,
+      callback
+    ) {
+      uploadedBytes += chunk.length;
+
+      const progress =
+        Math.min(
+          99,
+          Math.round(
+            (uploadedBytes / totalBytes) *
+              100
+          )
+        );
+
+      updateUploadProgress(
+        uploadLogId,
+        {
+          progress,
+          status: "uploading",
+        }
+      );
+
+      onProgress?.(progress);
+
+      callback(null, chunk);
+    },
+  });
+
+videoStream.pipe(progressStream);
 
     const response =
       await youtube.videos.insert({
@@ -195,7 +234,7 @@ export async function uploadVideoToYouTube(
 
         media: {
           mimeType: "video/mp4",
-          body: videoStream,
+          body: progressStream,
         },
       });
 
@@ -237,6 +276,16 @@ export async function uploadVideoToYouTube(
       ]
     );
 
+    updateUploadProgress(
+  uploadLogId,
+  {
+    progress: 100,
+    status: "completed",
+    youtubeVideoId,
+    youtubeVideoUrl,
+  }
+);
+
     onProgress?.(100);
 
     return {
@@ -272,6 +321,14 @@ export async function uploadVideoToYouTube(
         uploadLogId,
       ]
     );
+
+    updateUploadProgress(
+  uploadLogId,
+  {
+    status: "failed",
+    errorMessage,
+  }
+);
 
     throw error;
   }

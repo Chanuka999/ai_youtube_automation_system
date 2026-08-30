@@ -9,6 +9,9 @@ export interface VideoProject extends RowDataPacket {
   niche: string;
   video_type: "short" | "long";
   duration: number | null;
+  description: string | null;
+  hashtags: string | null;
+  video_path: string | null;
   status:
     | "draft"
     | "generating"
@@ -28,6 +31,9 @@ export interface CreateVideoProjectData {
   niche?: string;
   video_type?: "short" | "long";
   duration?: number;
+  description?: string;
+  hashtags?: string;
+  video_path?: string;
 }
 
 export interface UpdateVideoProjectData {
@@ -36,6 +42,9 @@ export interface UpdateVideoProjectData {
   niche?: string;
   video_type?: "short" | "long";
   duration?: number;
+  description?: string;
+  hashtags?: string;
+  video_path?: string;
   status?: VideoProject["status"];
 }
 
@@ -79,9 +88,12 @@ export async function createVideoProject(
       topic,
       niche,
       video_type,
-      duration
+      duration,
+      description,
+      hashtags,
+      video_path
     )
-    VALUES (?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
     [
       data.user_id,
@@ -90,6 +102,9 @@ export async function createVideoProject(
       data.niche || "General",
       data.video_type || "short",
       data.duration || null,
+      data.description || null,
+      data.hashtags || null,
+      data.video_path || null,
     ]
   );
 
@@ -126,6 +141,21 @@ export async function updateVideoProject(
   if (data.duration !== undefined) {
     fields.push("duration = ?");
     values.push(data.duration);
+  }
+  
+  if (data.description !== undefined) {
+    fields.push("description = ?");
+    values.push(data.description);
+  }
+  
+  if (data.hashtags !== undefined) {
+    fields.push("hashtags = ?");
+    values.push(data.hashtags);
+  }
+  
+  if (data.video_path !== undefined) {
+    fields.push("video_path = ?");
+    values.push(data.video_path);
   }
 
   if (data.status !== undefined) {

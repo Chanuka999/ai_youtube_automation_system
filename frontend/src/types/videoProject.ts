@@ -17,6 +17,9 @@ export interface VideoProject {
   niche: string;
   video_type: VideoType;
   duration: number | null;
+  description: string | null;
+  hashtags: string | null;
+  video_path: string | null;
   status: VideoStatus;
   created_at: string;
   updated_at: string;
@@ -29,6 +32,9 @@ export interface CreateVideoProjectPayload {
   niche?: string;
   video_type?: VideoType;
   duration?: number;
+  description?: string;
+  hashtags?: string;
+  video_path?: string;
 }
 
 export interface UpdateVideoProjectPayload {
@@ -37,5 +43,8 @@ export interface UpdateVideoProjectPayload {
   niche?: string;
   video_type?: VideoType;
   duration?: number;
+  description?: string;
+  hashtags?: string;
+  video_path?: string;
   status?: VideoStatus;
 }
