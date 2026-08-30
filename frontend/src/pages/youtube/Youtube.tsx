@@ -1,6 +1,6 @@
-import { CheckCircle2, PlaySquare, User } from "lucide-react";
+import { CheckCircle2, PlaySquare, User, History } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 
 export default function YouTube() {
   const [searchParams] = useSearchParams();
@@ -41,15 +41,25 @@ export default function YouTube() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">
-          YouTube
-        </h1>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            YouTube
+          </h1>
 
-        <p className="mt-1 text-sm text-slate-500">
-          Connect your YouTube channel to enable
-          automatic uploads.
-        </p>
+          <p className="mt-1 text-sm text-slate-500">
+            Connect your YouTube channel to enable
+            automatic uploads.
+          </p>
+        </div>
+
+        <Link
+          to="/youtube/upload"
+          className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+        >
+          <History size={16} />
+          View Upload History
+        </Link>
       </div>
 
       {connected && (

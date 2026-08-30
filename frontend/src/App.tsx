@@ -4,6 +4,8 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import VideoProjects from "./pages/videos/VideoProjects";
 import YouTube from "./pages/youtube/Youtube";
+import YouTubeUpload from "./pages/youtube/YouTubeUpload";
+import YouTubeUploadHistory from "./pages/youtube/YouTubeUploadHistory";
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -51,6 +53,9 @@ export default function App() {
             path="/youtube"
             element={<YouTube />}
           />
+         <Route path="/youtube/upload" element={<YouTubeUpload />}/>
+         <Route path="/youtube/uploads" element={<YouTubeUploadHistory />}/>
+
         </Route>
       </Routes>
     </BrowserRouter>
